@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+dist/
+build/
+
+# Environment variables - NEVER commit these
+.env
+.env.*
+.env.local
+.env.example
+
+# Coverage
+coverage/
+.nyc_output
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Keys / certs
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+
+# NestJS
+.nestjs/
