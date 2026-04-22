@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AppConfigModule } from './config/config.module';
 import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { UsersModule } from './users/users.module';
 import { WorkoutsModule } from './workouts/workouts.module';
 import { ExercisesModule } from './exercises/exercises.module';
@@ -45,6 +46,12 @@ import { MeasurementsModule } from './measurements/measurements.module';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    // JwtAuthGuard registered globally — all routes require JWT by default
+    // Use @Public() decorator to opt out on specific routes
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
 })
