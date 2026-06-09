@@ -48,6 +48,7 @@ describe('Security (integration)', () => {
     const configServiceMock = {
       getOrThrow: jest.fn((key: string) => {
         if (key === 'JWT_SECRET') return JWT_SECRET;
+        if (key === 'SUPABASE_URL') return 'https://example.supabase.co';
         throw new Error(`Unknown config key: ${key}`);
       }),
     };
@@ -93,9 +94,7 @@ describe('Security (integration)', () => {
   // 401 — no token
   // -----------------------------------------------------------------------
   it('returns 401 when no Authorization header is provided on a protected endpoint', async () => {
-    await request(app.getHttpServer())
-      .get('/test-protected')
-      .expect(401);
+    await request(app.getHttpServer()).get('/test-protected').expect(401);
   });
 
   // -----------------------------------------------------------------------
@@ -125,9 +124,7 @@ describe('Security (integration)', () => {
   // Public endpoints are accessible without a token
   // -----------------------------------------------------------------------
   it('returns 200 on a @Public() endpoint without a token', async () => {
-    await request(app.getHttpServer())
-      .get('/test-public')
-      .expect(200);
+    await request(app.getHttpServer()).get('/test-public').expect(200);
   });
 
   // -----------------------------------------------------------------------
@@ -135,7 +132,7 @@ describe('Security (integration)', () => {
   // -----------------------------------------------------------------------
   it('does not return 500 for SQL-injection-like characters in query params on public endpoint', async () => {
     const res = await request(app.getHttpServer())
-      .get('/test-public?name=\' OR 1=1 --')
+      .get("/test-public?name=' OR 1=1 --")
       .expect((r) => {
         expect(r.status).not.toBe(500);
       });

@@ -11,7 +11,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import {
   CreateMeasurementDto,
@@ -43,7 +48,10 @@ export class MeasurementsController {
   @ApiOperation({ summary: 'Get a single measurement entry' })
   @ApiResponse({ status: 200, description: 'Measurement found' })
   @ApiResponse({ status: 404, description: 'Not found' })
-  findOne(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+  findOne(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.measurementsService.findOne(id, user.userId);
   }
 
@@ -71,7 +79,10 @@ export class MeasurementsController {
   @ApiOperation({ summary: 'Delete a measurement entry' })
   @ApiResponse({ status: 200, description: 'Measurement deleted' })
   @ApiResponse({ status: 404, description: 'Not found' })
-  remove(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+  remove(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.measurementsService.remove(id, user.userId);
   }
 }

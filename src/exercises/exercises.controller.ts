@@ -11,7 +11,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { QueryExerciseDto } from './dto/query-exercise.dto';
@@ -31,7 +36,9 @@ export class ExercisesController {
   constructor(private readonly exercisesService: ExercisesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List exercises (public + own), with optional filters' })
+  @ApiOperation({
+    summary: 'List exercises (public + own), with optional filters',
+  })
   @ApiResponse({ status: 200, description: 'Paginated list of exercises' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async findAll(

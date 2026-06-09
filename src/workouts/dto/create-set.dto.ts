@@ -1,9 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsInt, IsNumber, IsOptional, IsString, IsUUID, Max, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+  Max,
+  Min,
+} from 'class-validator';
+import { UUID_LIKE_REGEX } from '../../common/utils/uuid.util';
 
 export class CreateSetDto {
   @ApiProperty({ example: 'uuid-of-exercise' })
-  @IsUUID()
+  @Matches(UUID_LIKE_REGEX, { message: 'exerciseId must be a valid UUID' })
   exerciseId: string;
 
   @ApiPropertyOptional({ example: 1 })
@@ -36,7 +45,10 @@ export class CreateSetDto {
   @Min(0)
   distanceMeters?: number;
 
-  @ApiPropertyOptional({ example: 8.5, description: 'Rate of perceived exertion (1-10)' })
+  @ApiPropertyOptional({
+    example: 8.5,
+    description: 'Rate of perceived exertion (1-10)',
+  })
   @IsOptional()
   @IsNumber()
   @Min(1)

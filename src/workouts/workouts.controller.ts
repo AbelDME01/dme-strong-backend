@@ -11,7 +11,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { CreateSetDto } from './dto/create-set.dto';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
@@ -43,7 +48,10 @@ export class WorkoutsController {
   @ApiOperation({ summary: 'Get a workout with its sets' })
   @ApiResponse({ status: 200, description: 'Workout with sets' })
   @ApiResponse({ status: 404, description: 'Not found' })
-  findOne(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+  findOne(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.workoutsService.findOne(id, user.userId);
   }
 
@@ -72,7 +80,10 @@ export class WorkoutsController {
   @ApiOperation({ summary: 'Delete a workout and all its sets' })
   @ApiResponse({ status: 200, description: 'Workout deleted' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  remove(@CurrentUser() user: AuthUser, @Param('id', ParseUUIDPipe) id: string) {
+  remove(
+    @CurrentUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
     return this.workoutsService.remove(id, user.userId);
   }
 

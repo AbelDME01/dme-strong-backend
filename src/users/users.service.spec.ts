@@ -63,7 +63,10 @@ describe('UsersService', () => {
   describe('getProfile', () => {
     it('returns the user profile when found', async () => {
       const profile = { user_id: USER_ID, full_name: 'Test User' };
-      queryBuilder.maybeSingle.mockResolvedValue({ data: profile, error: null });
+      queryBuilder.maybeSingle.mockResolvedValue({
+        data: profile,
+        error: null,
+      });
 
       const result = await service.getProfile(USER_ID);
 
@@ -75,7 +78,9 @@ describe('UsersService', () => {
     it('throws NotFoundException when profile does not exist', async () => {
       queryBuilder.maybeSingle.mockResolvedValue({ data: null, error: null });
 
-      await expect(service.getProfile(USER_ID)).rejects.toThrow(NotFoundException);
+      await expect(service.getProfile(USER_ID)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('throws InternalServerErrorException on Supabase error', async () => {

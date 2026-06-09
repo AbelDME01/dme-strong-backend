@@ -39,7 +39,12 @@ export class MeasurementsService {
 
     return {
       data,
-      meta: { total: count ?? 0, page, limit, totalPages: Math.ceil((count ?? 0) / limit) },
+      meta: {
+        total: count ?? 0,
+        page,
+        limit,
+        totalPages: Math.ceil((count ?? 0) / limit),
+      },
     };
   }
 
@@ -85,8 +90,10 @@ export class MeasurementsService {
     const payload: Record<string, unknown> = {};
     if (dto.measuredAt !== undefined) payload.measured_at = dto.measuredAt;
     if (dto.weightKg !== undefined) payload.weight_kg = dto.weightKg;
-    if (dto.bodyFatPercentage !== undefined) payload.body_fat_percentage = dto.bodyFatPercentage;
-    if (dto.muscleMassKg !== undefined) payload.muscle_mass_kg = dto.muscleMassKg;
+    if (dto.bodyFatPercentage !== undefined)
+      payload.body_fat_percentage = dto.bodyFatPercentage;
+    if (dto.muscleMassKg !== undefined)
+      payload.muscle_mass_kg = dto.muscleMassKg;
     if (dto.chestCm !== undefined) payload.chest_cm = dto.chestCm;
     if (dto.waistCm !== undefined) payload.waist_cm = dto.waistCm;
     if (dto.hipsCm !== undefined) payload.hips_cm = dto.hipsCm;
@@ -107,7 +114,10 @@ export class MeasurementsService {
 
   async remove(id: string, userId: string) {
     await this.assertOwnership(id, userId);
-    const { error } = await this.client.from('measurements').delete().eq('id', id);
+    const { error } = await this.client
+      .from('measurements')
+      .delete()
+      .eq('id', id);
     if (error) throw new InternalServerErrorException(error.message);
     return { message: 'Measurement deleted successfully' };
   }

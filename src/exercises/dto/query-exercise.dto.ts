@@ -2,8 +2,24 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
-const MUSCLE_GROUPS = ['chest', 'back', 'legs', 'shoulders', 'arms', 'core', 'cardio', 'other'] as const;
-const EQUIPMENT_TYPES = ['barbell', 'dumbbell', 'machine', 'bodyweight', 'cable', 'other'] as const;
+const MUSCLE_GROUPS = [
+  'chest',
+  'back',
+  'legs',
+  'shoulders',
+  'arms',
+  'core',
+  'cardio',
+  'other',
+] as const;
+const EQUIPMENT_TYPES = [
+  'barbell',
+  'dumbbell',
+  'machine',
+  'bodyweight',
+  'cable',
+  'other',
+] as const;
 
 export class QueryExerciseDto {
   @ApiPropertyOptional({ enum: MUSCLE_GROUPS })

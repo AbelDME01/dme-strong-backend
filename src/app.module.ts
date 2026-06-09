@@ -12,6 +12,7 @@ import { WorkoutsModule } from './workouts/workouts.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { RecordsModule } from './records/records.module';
 import { MeasurementsModule } from './measurements/measurements.module';
+import { RoutinesModule } from './routines/routines.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MeasurementsModule } from './measurements/measurements.module';
     ExercisesModule,
     RecordsModule,
     MeasurementsModule,
+    RoutinesModule,
   ],
   controllers: [AppController],
   providers: [

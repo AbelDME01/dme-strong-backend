@@ -66,7 +66,11 @@ describe('RecordsService', () => {
   describe('findAll', () => {
     it('returns records for the user with exercise joins', async () => {
       const records = [
-        { id: RECORD_ID, user_id: USER_ID, exercises: { name: 'Bench', muscle_group: 'chest' } },
+        {
+          id: RECORD_ID,
+          user_id: USER_ID,
+          exercises: { name: 'Bench', muscle_group: 'chest' },
+        },
       ];
       queryBuilder.then = jest.fn((resolve) =>
         resolve({ data: records, error: null }),

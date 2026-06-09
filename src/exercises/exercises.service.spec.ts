@@ -83,7 +83,7 @@ describe('ExercisesService', () => {
         resolve({ data: [], error: null, count: 0 }),
       );
 
-      await service.findAll(USER_ID, { muscleGroup: 'chest' as any });
+      await service.findAll(USER_ID, { muscleGroup: 'chest' });
 
       expect(queryBuilder.eq).toHaveBeenCalledWith('muscle_group', 'chest');
     });
@@ -115,7 +115,10 @@ describe('ExercisesService', () => {
   describe('findOne', () => {
     it('returns the exercise when found', async () => {
       const exercise = { id: EXERCISE_ID, name: 'Bench Press' };
-      queryBuilder.maybeSingle.mockResolvedValue({ data: exercise, error: null });
+      queryBuilder.maybeSingle.mockResolvedValue({
+        data: exercise,
+        error: null,
+      });
 
       const result = await service.findOne(EXERCISE_ID, USER_ID);
 
@@ -210,7 +213,9 @@ describe('ExercisesService', () => {
       // Second call: update result (single)
       queryBuilder.single.mockResolvedValueOnce({ data: updated, error: null });
 
-      const result = await service.update(EXERCISE_ID, USER_ID, { name: 'Updated' });
+      const result = await service.update(EXERCISE_ID, USER_ID, {
+        name: 'Updated',
+      });
 
       expect(queryBuilder.update).toHaveBeenCalledWith(
         expect.objectContaining({ name: 'Updated' }),

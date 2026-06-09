@@ -55,7 +55,11 @@ describe('AuthService', () => {
       const mockData = { user: { id: USER_ID }, session: null };
       anonClient.auth.signUp.mockResolvedValue({ data: mockData, error: null });
 
-      const dto = { email: 'test@test.com', password: 'pass123', fullName: 'Test User' };
+      const dto = {
+        email: 'test@test.com',
+        password: 'pass123',
+        fullName: 'Test User',
+      };
       const result = await service.register(dto);
 
       expect(anonClient.auth.signUp).toHaveBeenCalledWith({
@@ -90,7 +94,10 @@ describe('AuthService', () => {
         error: null,
       });
 
-      const result = await service.login({ email: 'test@test.com', password: 'pass123' });
+      const result = await service.login({
+        email: 'test@test.com',
+        password: 'pass123',
+      });
 
       expect(result).toEqual({ user, session });
     });

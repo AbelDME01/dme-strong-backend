@@ -9,7 +9,8 @@ export class SupabaseService {
 
   constructor(private readonly configService: ConfigService) {
     const supabaseUrl = this.configService.getOrThrow<string>('SUPABASE_URL');
-    const supabaseAnonKey = this.configService.getOrThrow<string>('SUPABASE_ANON_KEY');
+    const supabaseAnonKey =
+      this.configService.getOrThrow<string>('SUPABASE_ANON_KEY');
     const supabaseServiceRoleKey = this.configService.getOrThrow<string>(
       'SUPABASE_SERVICE_ROLE_KEY',
     );

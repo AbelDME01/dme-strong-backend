@@ -63,7 +63,9 @@ describe('MeasurementsService', () => {
   // -----------------------------------------------------------------------
   describe('findAll', () => {
     it('returns paginated measurements ordered by date DESC', async () => {
-      const measurements = [{ id: MEASUREMENT_ID, user_id: USER_ID, measured_at: '2024-01-01' }];
+      const measurements = [
+        { id: MEASUREMENT_ID, user_id: USER_ID, measured_at: '2024-01-01' },
+      ];
       queryBuilder.then = jest.fn((resolve) =>
         resolve({ data: measurements, error: null, count: 1 }),
       );
@@ -71,7 +73,9 @@ describe('MeasurementsService', () => {
       const result = await service.findAll(USER_ID, {});
 
       expect(adminClient.from).toHaveBeenCalledWith('measurements');
-      expect(queryBuilder.order).toHaveBeenCalledWith('measured_at', { ascending: false });
+      expect(queryBuilder.order).toHaveBeenCalledWith('measured_at', {
+        ascending: false,
+      });
       expect(result.data).toEqual(measurements);
       expect(result.meta.total).toBe(1);
     });
@@ -161,7 +165,9 @@ describe('MeasurementsService', () => {
       });
       queryBuilder.single.mockResolvedValueOnce({ data: updated, error: null });
 
-      const result = await service.update(MEASUREMENT_ID, USER_ID, { weightKg: 80 });
+      const result = await service.update(MEASUREMENT_ID, USER_ID, {
+        weightKg: 80,
+      });
 
       expect(queryBuilder.update).toHaveBeenCalledWith(
         expect.objectContaining({ weight_kg: 80 }),

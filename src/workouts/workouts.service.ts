@@ -41,7 +41,12 @@ export class WorkoutsService {
 
     return {
       data,
-      meta: { total: count ?? 0, page, limit, totalPages: Math.ceil((count ?? 0) / limit) },
+      meta: {
+        total: count ?? 0,
+        page,
+        limit,
+        totalPages: Math.ceil((count ?? 0) / limit),
+      },
     };
   }
 
@@ -64,7 +69,8 @@ export class WorkoutsService {
 
     if (setsError) throw new InternalServerErrorException(setsError.message);
 
-    return { ...workout, sets: sets ?? [] };
+    // Align with the frontend Workout model and DB table name (`workout_sets`).
+    return { ...workout, workout_sets: sets ?? [] };
   }
 
   async create(userId: string, dto: CreateWorkoutDto) {
@@ -91,7 +97,8 @@ export class WorkoutsService {
     if (dto.name !== undefined) payload.name = dto.name;
     if (dto.notes !== undefined) payload.notes = dto.notes;
     if (dto.finishedAt !== undefined) payload.finished_at = dto.finishedAt;
-    if (dto.durationSeconds !== undefined) payload.duration_seconds = dto.durationSeconds;
+    if (dto.durationSeconds !== undefined)
+      payload.duration_seconds = dto.durationSeconds;
 
     const { data, error } = await this.client
       .from('workouts')
@@ -134,14 +141,21 @@ export class WorkoutsService {
     return data;
   }
 
-  async updateSet(setId: string, workoutId: string, userId: string, dto: UpdateSetDto) {
+  async updateSet(
+    setId: string,
+    workoutId: string,
+    userId: string,
+    dto: UpdateSetDto,
+  ) {
     await this.assertOwnership(workoutId, userId);
 
     const payload: Record<string, unknown> = {};
     if (dto.reps !== undefined) payload.reps = dto.reps;
     if (dto.weightKg !== undefined) payload.weight_kg = dto.weightKg;
-    if (dto.durationSeconds !== undefined) payload.duration_seconds = dto.durationSeconds;
-    if (dto.distanceMeters !== undefined) payload.distance_meters = dto.distanceMeters;
+    if (dto.durationSeconds !== undefined)
+      payload.duration_seconds = dto.durationSeconds;
+    if (dto.distanceMeters !== undefined)
+      payload.distance_meters = dto.distanceMeters;
     if (dto.rpe !== undefined) payload.rpe = dto.rpe;
     if (dto.notes !== undefined) payload.notes = dto.notes;
     if (dto.setNumber !== undefined) payload.set_number = dto.setNumber;

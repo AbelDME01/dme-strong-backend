@@ -1,8 +1,30 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
-const MUSCLE_GROUPS = ['chest', 'back', 'legs', 'shoulders', 'arms', 'core', 'cardio', 'other'] as const;
-const EQUIPMENT_TYPES = ['barbell', 'dumbbell', 'machine', 'bodyweight', 'cable', 'other'] as const;
+const MUSCLE_GROUPS = [
+  'chest',
+  'back',
+  'legs',
+  'shoulders',
+  'arms',
+  'core',
+  'cardio',
+  'other',
+] as const;
+const EQUIPMENT_TYPES = [
+  'barbell',
+  'dumbbell',
+  'machine',
+  'bodyweight',
+  'cable',
+  'other',
+] as const;
 
 export class CreateExerciseDto {
   @ApiProperty({ example: 'Bench Press' })

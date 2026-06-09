@@ -7,6 +7,7 @@ import {
 import { SupabaseService } from '../supabase/supabase.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { throwIfUpstreamUnavailable } from '../common/utils/supabase-error.util';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
     });
 
     if (error) {
+      throwIfUpstreamUnavailable(error);
       throw new BadRequestException(error.message);
     }
 
@@ -39,6 +41,7 @@ export class AuthService {
     });
 
     if (error) {
+      throwIfUpstreamUnavailable(error);
       throw new UnauthorizedException(error.message);
     }
 
@@ -63,6 +66,7 @@ export class AuthService {
     });
 
     if (error) {
+      throwIfUpstreamUnavailable(error);
       throw new UnauthorizedException(error.message);
     }
 

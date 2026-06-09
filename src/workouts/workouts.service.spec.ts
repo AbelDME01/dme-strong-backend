@@ -101,7 +101,10 @@ describe('WorkoutsService', () => {
       const sets = [{ id: SET_ID, workout_id: WORKOUT_ID }];
 
       // First maybeSingle: workout lookup
-      queryBuilder.maybeSingle.mockResolvedValueOnce({ data: workout, error: null });
+      queryBuilder.maybeSingle.mockResolvedValueOnce({
+        data: workout,
+        error: null,
+      });
       // Second await: sets list (order resolves via then)
       queryBuilder.then = jest.fn((resolve) =>
         resolve({ data: sets, error: null }),
@@ -109,7 +112,7 @@ describe('WorkoutsService', () => {
 
       const result = await service.findOne(WORKOUT_ID, USER_ID);
 
-      expect(result).toMatchObject({ id: WORKOUT_ID, sets });
+      expect(result).toMatchObject({ id: WORKOUT_ID, workout_sets: sets });
     });
 
     it('throws NotFoundException when workout does not exist', async () => {
@@ -195,7 +198,9 @@ describe('WorkoutsService', () => {
       // update single
       queryBuilder.single.mockResolvedValueOnce({ data: updated, error: null });
 
-      const result = await service.update(WORKOUT_ID, USER_ID, { name: 'Updated' });
+      const result = await service.update(WORKOUT_ID, USER_ID, {
+        name: 'Updated',
+      });
 
       expect(queryBuilder.update).toHaveBeenCalledWith(
         expect.objectContaining({ name: 'Updated' }),

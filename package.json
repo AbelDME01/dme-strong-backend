@@ -34,6 +34,7 @@
     "class-validator": "^0.15.1",
     "helmet": "^8.1.0",
     "joi": "^18.1.2",
+    "jwks-rsa": "^4.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.2.2",
@@ -74,8 +75,18 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "allowJs": true
+          }
+        }
+      ]
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jose|jwks-rsa)/)"
+    ],
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
