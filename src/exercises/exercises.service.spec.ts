@@ -3,11 +3,13 @@ import {
   ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ExercisesService } from './exercises.service';
 import { SupabaseService } from '../supabase/supabase.service';
 
-const USER_ID = 'user-123';
+// UUID-shaped: findAll/findOne reject non-UUID userIds (filter injection guard)
+const USER_ID = '11111111-2222-3333-4444-555555555555';
 const EXERCISE_ID = 'exercise-abc';
 
 const makeQueryBuilder = () => {
@@ -107,6 +109,14 @@ describe('ExercisesService', () => {
         InternalServerErrorException,
       );
     });
+
+    it('rejects a non-UUID userId without querying the database', async () => {
+      await expect(
+        service.findAll('not-a-uuid,role.eq.admin', {}),
+      ).rejects.toThrow(UnauthorizedException);
+
+      expect(queryBuilder.or).not.toHaveBeenCalled();
+    });
   });
 
   // -----------------------------------------------------------------------
@@ -142,6 +152,14 @@ describe('ExercisesService', () => {
       await expect(service.findOne(EXERCISE_ID, USER_ID)).rejects.toThrow(
         InternalServerErrorException,
       );
+    });
+
+    it('rejects a non-UUID userId without querying the database', async () => {
+      await expect(
+        service.findOne(EXERCISE_ID, 'not-a-uuid,role.eq.admin'),
+      ).rejects.toThrow(UnauthorizedException);
+
+      expect(queryBuilder.or).not.toHaveBeenCalled();
     });
   });
 
