@@ -35,6 +35,22 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
+  describe('rate limiting', () => {
+    // Metadata keys built by @nestjs/throttler's Throttle decorator
+    // (THROTTLER_LIMIT/THROTTLER_TTL + throttler name); the constants are not
+    // exported from the package index.
+    it.each(['register', 'login', 'refresh'] as const)(
+      'applies a strict 5/min throttle to %s',
+      (method) => {
+        const handler = AuthController.prototype[method];
+        expect(Reflect.getMetadata('THROTTLER:LIMITdefault', handler)).toBe(5);
+        expect(Reflect.getMetadata('THROTTLER:TTLdefault', handler)).toBe(
+          60000,
+        );
+      },
+    );
+  });
+
   describe('register', () => {
     it('delegates to authService.register and returns result', async () => {
       const dto: RegisterDto = { email: 'test@dme.com', password: 'Pass123!' };

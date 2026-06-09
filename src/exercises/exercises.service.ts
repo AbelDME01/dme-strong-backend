@@ -3,8 +3,10 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { UUID_LIKE_REGEX } from '../common/utils/uuid.util';
 import { CreateExerciseDto } from './dto/create-exercise.dto';
 import { QueryExerciseDto } from './dto/query-exercise.dto';
 import { UpdateExerciseDto } from './dto/update-exercise.dto';
@@ -12,6 +14,18 @@ import { UpdateExerciseDto } from './dto/update-exercise.dto';
 @Injectable()
 export class ExercisesService {
   constructor(private readonly supabaseService: SupabaseService) {}
+
+  /**
+   * The userId is interpolated into PostgREST filter syntax, so it must be
+   * UUID-shaped to prevent filter injection (defense in depth — the value
+   * comes from a validated JWT claim).
+   */
+  private buildVisibilityFilter(userId: string): string {
+    if (!UUID_LIKE_REGEX.test(userId)) {
+      throw new UnauthorizedException('Invalid user identifier');
+    }
+    return `is_public.eq.true,created_by.eq.${userId}`;
+  }
 
   async findAll(userId: string, query: QueryExerciseDto) {
     const client = this.supabaseService.getAdminClient();
@@ -23,7 +37,7 @@ export class ExercisesService {
     let q = client
       .from('exercises')
       .select('*', { count: 'exact' })
-      .or(`is_public.eq.true,created_by.eq.${userId}`)
+      .or(this.buildVisibilityFilter(userId))
       .range(from, to)
       .order('created_at', { ascending: false });
 
@@ -62,7 +76,7 @@ export class ExercisesService {
       .from('exercises')
       .select('*')
       .eq('id', id)
-      .or(`is_public.eq.true,created_by.eq.${userId}`)
+      .or(this.buildVisibilityFilter(userId))
       .maybeSingle();
 
     if (error) {
