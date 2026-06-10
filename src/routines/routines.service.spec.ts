@@ -61,7 +61,7 @@ describe('RoutinesService', () => {
 
       expect(adminClient.from).toHaveBeenCalledWith('routines');
       expect(queryBuilder.select).toHaveBeenCalledWith(
-        '*, routine_exercises(*, exercises(*))',
+        '*, routine_exercises(*, exercise:exercises(*))',
       );
       expect(queryBuilder.eq).toHaveBeenCalledWith('user_id', USER_ID);
       expect(result).toEqual(routines);

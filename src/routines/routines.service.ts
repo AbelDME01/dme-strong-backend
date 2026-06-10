@@ -57,7 +57,7 @@ export class RoutinesService {
   async findAll(userId: string) {
     const { data, error } = await this.client
       .from('routines')
-      .select('*, routine_exercises(*, exercises(*))')
+      .select('*, routine_exercises(*, exercise:exercises(*))')
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
@@ -68,7 +68,7 @@ export class RoutinesService {
   async findOne(id: string, userId: string) {
     const { data, error } = await this.client
       .from('routines')
-      .select('*, routine_exercises(*, exercises(*))')
+      .select('*, routine_exercises(*, exercise:exercises(*))')
       .eq('id', id)
       .eq('user_id', userId)
       .maybeSingle();

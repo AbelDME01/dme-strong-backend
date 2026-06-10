@@ -63,7 +63,7 @@ export class WorkoutsService {
 
     const { data: sets, error: setsError } = await this.client
       .from('workout_sets')
-      .select('*')
+      .select('*, exercise:exercises(id, name, muscle_group)')
       .eq('workout_id', id)
       .order('set_number', { ascending: true });
 
