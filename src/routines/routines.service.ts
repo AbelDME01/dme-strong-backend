@@ -62,7 +62,7 @@ export class RoutinesService {
       .order('created_at', { ascending: false });
 
     if (error) throw new InternalServerErrorException(error.message);
-    return data;
+    return data ?? [];
   }
 
   async findOne(id: string, userId: string) {

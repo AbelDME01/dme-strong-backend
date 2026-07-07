@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { SupabaseService } from '../supabase/supabase.service';
 
@@ -75,12 +72,15 @@ describe('UsersService', () => {
       expect(result).toEqual(profile);
     });
 
-    it('throws NotFoundException when profile does not exist', async () => {
+    it('auto-provisions an empty profile when none exists', async () => {
+      const newProfile = { user_id: USER_ID };
       queryBuilder.maybeSingle.mockResolvedValue({ data: null, error: null });
+      queryBuilder.single.mockResolvedValue({ data: newProfile, error: null });
 
-      await expect(service.getProfile(USER_ID)).rejects.toThrow(
-        NotFoundException,
-      );
+      const result = await service.getProfile(USER_ID);
+
+      expect(queryBuilder.insert).toHaveBeenCalledWith({ user_id: USER_ID });
+      expect(result).toEqual(newProfile);
     });
 
     it('throws InternalServerErrorException on Supabase error', async () => {

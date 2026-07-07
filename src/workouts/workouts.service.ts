@@ -25,9 +25,13 @@ export class WorkoutsService {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
+    const selectStr = query.includeSets
+      ? '*, workout_sets(*, exercise:exercises(id, name, muscle_group))'
+      : '*';
+
     let q = this.client
       .from('workouts')
-      .select('*', { count: 'exact' })
+      .select(selectStr, { count: 'exact' })
       .eq('user_id', userId)
       .order('started_at', { ascending: false })
       .range(from, to);
@@ -138,7 +142,79 @@ export class WorkoutsService {
       .single();
 
     if (error) throw new InternalServerErrorException(error.message);
+
+    // Auto-upsert personal records (fire-and-forget — don't fail the set if this errors).
+    this.tryUpsertRecords(userId, dto, workoutId).catch(() => undefined);
+
     return data;
+  }
+
+  private async tryUpsertRecords(
+    userId: string,
+    dto: CreateSetDto,
+    workoutId: string,
+  ): Promise<void> {
+    const now = new Date().toISOString();
+    const upserts: Array<{
+      user_id: string;
+      exercise_id: string;
+      record_type: string;
+      value: number;
+      unit: string;
+      achieved_at: string;
+      workout_id: string;
+    }> = [];
+
+    if (dto.weightKg != null && dto.weightKg > 0) {
+      // Check existing max_weight record.
+      const { data: existing } = await this.client
+        .from('records')
+        .select('value')
+        .eq('user_id', userId)
+        .eq('exercise_id', dto.exerciseId)
+        .eq('record_type', 'max_weight')
+        .maybeSingle();
+
+      if (!existing || dto.weightKg > existing.value) {
+        upserts.push({
+          user_id: userId,
+          exercise_id: dto.exerciseId,
+          record_type: 'max_weight',
+          value: dto.weightKg,
+          unit: 'kg',
+          achieved_at: now,
+          workout_id: workoutId,
+        });
+      }
+    }
+
+    if (dto.reps != null && dto.reps > 0) {
+      const { data: existing } = await this.client
+        .from('records')
+        .select('value')
+        .eq('user_id', userId)
+        .eq('exercise_id', dto.exerciseId)
+        .eq('record_type', 'max_reps')
+        .maybeSingle();
+
+      if (!existing || dto.reps > existing.value) {
+        upserts.push({
+          user_id: userId,
+          exercise_id: dto.exerciseId,
+          record_type: 'max_reps',
+          value: dto.reps,
+          unit: 'reps',
+          achieved_at: now,
+          workout_id: workoutId,
+        });
+      }
+    }
+
+    if (upserts.length > 0) {
+      await this.client
+        .from('records')
+        .upsert(upserts, { onConflict: 'user_id,exercise_id,record_type' });
+    }
   }
 
   async updateSet(
