@@ -24,7 +24,7 @@ import { RoutinesModule } from './routines/routines.module';
       throttlers: [
         {
           ttl: 60000,
-          limit: 10,
+          limit: 120,
         },
       ],
     }),

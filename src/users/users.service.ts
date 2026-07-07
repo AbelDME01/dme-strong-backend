@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 
@@ -22,8 +18,16 @@ export class UsersService {
       throw new InternalServerErrorException(error.message);
     }
 
+    // Auto-provision empty profile for new users so the frontend never gets a 404.
     if (!data) {
-      throw new NotFoundException('User profile not found');
+      const { data: created, error: createError } = await client
+        .from('user_profiles')
+        .insert({ user_id: userId })
+        .select()
+        .single();
+      if (createError)
+        throw new InternalServerErrorException(createError.message);
+      return created;
     }
 
     return data;
